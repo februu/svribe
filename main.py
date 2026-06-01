@@ -24,6 +24,10 @@ bot = Bot()
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
+    await bot.change_presence(
+        activity=discord.CustomActivity(name="🦋 Watching over your notes..."),
+        status=discord.Status.idle,
+    )
 
 
 bot.run(config.DISCORD_TOKEN)
