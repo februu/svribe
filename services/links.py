@@ -1,7 +1,8 @@
 import re
 from typing import Iterable
 
-from services.llm import get_category_from_text
+from models.message_category import MessageCategory
+from services.llm import get_category
 
 URL_PATTERN = re.compile(
     r"https?://"  # must have protocol
@@ -16,7 +17,9 @@ def has_link(text: str) -> bool:
     return bool(URL_PATTERN.search(text))
 
 
-async def get_link_category(message: str, categories: Iterable[str]) -> str | None:
+async def get_link_category(
+    message: str, categories: Iterable[MessageCategory]
+) -> MessageCategory | None:
     """Gets the category for a given message containing a link."""
     # TODO: Fetch the link preview and use the title/description/Open Graph tags for better categorization
-    return await get_category_from_text(message, categories)
+    return await get_category(message, categories)
