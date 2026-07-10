@@ -9,7 +9,7 @@ from services.notes import get_note_category
 from models.message_category import MessageCategory
 
 
-async def get_message_categories_in_discord_category(
+async def get_message_categories_from_category_channel(
     guild: discord.Guild, category_name: str
 ) -> list[MessageCategory]:
     """Returns a list of MessageCategory objects for the given discord category."""
@@ -39,21 +39,21 @@ async def handle_incoming_message(message: discord.Message):
         return
 
     if message.attachments:
-        available_categories = await get_message_categories_in_discord_category(
+        available_categories = await get_message_categories_from_category_channel(
             message.guild, "files"
         )
         message_category = await get_file_category(
             message.attachments, available_categories
         )
     elif has_link(message.content):
-        available_categories = await get_message_categories_in_discord_category(
+        available_categories = await get_message_categories_from_category_channel(
             message.guild, "links"
         )
         message_category = await get_link_category(
             message.content, available_categories
         )
     else:
-        available_categories = await get_message_categories_in_discord_category(
+        available_categories = await get_message_categories_from_category_channel(
             message.guild, "notes"
         )
         message_category = await get_note_category(
