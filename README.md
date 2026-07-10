@@ -14,7 +14,6 @@ _Svribe is your personal Discord Assistant that will transform a server into you
 - Handles plain messages, links, and file types
 
 **Upcoming features:**
-- Ability to customize category and channel names
 - Response caching for file extensions and link domains
 - Smarter link categorization via OpenGraph / fetched metadata
 - Auto-sync messages and files to a local SQLite DB, with full server restore
