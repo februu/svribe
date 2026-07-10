@@ -3,7 +3,7 @@ import json
 from google import genai
 from google.genai.errors import ServerError
 from typing import Iterable
-from config import config
+from models.config import config
 from models.message_category import MessageCategory
 
 _client = genai.Client(api_key=config.GEMINI_API_KEY)

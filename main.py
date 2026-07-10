@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import os
 
-from config import config
+from models.config import config
 
 
 class Bot(commands.Bot):
