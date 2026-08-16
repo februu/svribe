@@ -1,4 +1,4 @@
-from typing import Iterable
+from collections.abc import Iterable
 
 from models.message_category import MessageCategory
 from services.llm import get_category

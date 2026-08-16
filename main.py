@@ -1,6 +1,7 @@
+import os
+
 import discord
 from discord.ext import commands
-import os
 
 from models.config import config
 

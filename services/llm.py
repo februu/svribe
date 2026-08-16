@@ -1,8 +1,10 @@
 import asyncio
 import json
+from collections.abc import Iterable
+
 from google import genai
 from google.genai.errors import ServerError
-from typing import Iterable
+
 from models.config import config
 from models.message_category import MessageCategory
 

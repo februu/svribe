@@ -1,12 +1,11 @@
 import discord
-from discord.ext import commands
 from discord import app_commands
+from discord.ext import commands
 
+from models.message_category import MessageCategory
 from services.files import get_file_category
 from services.links import get_link_category, has_link
 from services.notes import get_note_category
-
-from models.message_category import MessageCategory
 
 
 async def get_message_categories_from_category_channel(

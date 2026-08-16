@@ -1,5 +1,6 @@
+from collections.abc import Iterable
+
 import discord
-from typing import Iterable
 
 from models.message_category import MessageCategory
 from services.llm import get_category
