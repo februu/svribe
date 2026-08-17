@@ -221,3 +221,6 @@ __marimo__/
 
 # Sharenv key files
 *.key
+
+# Data files
+data/
