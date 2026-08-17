@@ -5,6 +5,7 @@ description = "Svribe is your personal Discord Assistant that will transform a s
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "aiosqlite>=0.22.1",
     "discord-py>=2.7.1",
     "google-genai>=2.7.0",
     "python-dotenv>=1.2.2",
