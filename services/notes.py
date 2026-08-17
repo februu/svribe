@@ -1,11 +1,11 @@
 from collections.abc import Iterable
 
-from models.message_category import MessageCategory
-from services.llm import get_category
+from models.destination import Destination
+from services.llm import get_destination
 
 
-async def get_note_category(
-    message: str, categories: Iterable[MessageCategory]
-) -> MessageCategory | None:
-    """Gets the category for a given note message."""
-    return await get_category(message, categories)
+async def get_note_destination(
+    message: str, destinations: Iterable[Destination]
+) -> Destination | None:
+    """Gets the destination for a given note message."""
+    return await get_destination(message, destinations)

@@ -3,8 +3,8 @@ from collections.abc import Iterable
 
 import tldextract
 
-from models.message_category import MessageCategory
-from services.llm import get_category
+from models.destination import Destination
+from services.llm import get_destination
 
 URL_PATTERN = re.compile(
     r"https?://"  # must have protocol
@@ -30,22 +30,22 @@ def _count_urls(text: str) -> int:
     return len(URL_PATTERN.findall(text))
 
 
-async def get_link_category(
-    message: str, categories: Iterable[MessageCategory]
-) -> MessageCategory | None:
-    """Gets the category for a given message containing a link."""
+async def get_link_destination(
+    message: str, destinations: Iterable[Destination]
+) -> Destination | None:
+    """Gets the destination for a given message containing a link."""
     # TODO: Fetch the link preview and use the title/description/Open Graph tags for better categorization
 
     if not has_link(message):
         return None
 
     if _count_urls(message) > 1:
-        return await get_category(message, categories)
+        return await get_destination(message, destinations)
 
     domain = _extract_domain_from_message(message)
     if domain:
-        for category in categories:
-            if domain in category.name:
-                return category
+        for destination in destinations:
+            if domain in destination.name:
+                return destination
 
-    return await get_category(message, categories)
+    return await get_destination(message, destinations)

@@ -6,7 +6,7 @@ from google import genai
 from google.genai.errors import ServerError
 
 from models.config import config
-from models.message_category import MessageCategory
+from models.destination import Destination
 
 _client = genai.Client(api_key=config.GEMINI_API_KEY)
 
@@ -22,7 +22,7 @@ class ConnectionError(Exception):
     """Raised when there is a connection error with the LLM."""
 
 
-async def generate_response(content: str, categories_json: str) -> str:
+async def generate_response(content: str, destinations_json: str) -> str:
     """Generates a response from the Gemini API for categorizing the given content."""
     try:
         response = await _client.aio.models.generate_content(
@@ -31,7 +31,7 @@ async def generate_response(content: str, categories_json: str) -> str:
             config=genai.types.GenerateContentConfig(
                 system_instruction=f"""You are a classification assistant.
     Your job is to classify a given text, link or file extensions into exactly one of the following categories:
-    {categories_json}
+    {destinations_json}
 
     Rules:
     - Reply with ONLY the category name, exactly as written above
@@ -49,31 +49,31 @@ async def generate_response(content: str, categories_json: str) -> str:
     return response.text
 
 
-async def get_category(
-    content: str, available_categories: Iterable[MessageCategory]
-) -> MessageCategory | None:
-    """Returns the category that best fits the given text, or None if no category matches."""
+async def get_destination(
+    content: str, available_destinations: Iterable[Destination]
+) -> Destination | None:
+    """Returns the destination that best fits the given text, or None if none match."""
 
-    categories = list(available_categories)
-    if not categories:
+    destinations = list(available_destinations)
+    if not destinations:
         return None
 
-    categories_formatted = json.dumps(
-        [{"name": c.name, "desc": c.description} for c in categories], indent=2
+    destinations_formatted = json.dumps(
+        [{"name": d.name, "desc": d.description} for d in destinations], indent=2
     )
     content = content.lower()
 
     for attempt in range(3):
         try:
-            response = await generate_response(content, categories_formatted)
+            response = await generate_response(content, destinations_formatted)
             response = response.strip().lower()
 
             if response == "<none>":
                 return None
 
-            for category in categories:
-                if category.name.lower() == response:
-                    return category
+            for destination in destinations:
+                if destination.name.lower() == response:
+                    return destination
 
             raise BadResponseError(f"Unexpected response from model: {response}")
 

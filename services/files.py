@@ -2,13 +2,13 @@ from collections.abc import Iterable
 
 import discord
 
-from models.message_category import MessageCategory
-from services.llm import get_category
+from models.destination import Destination
+from services.llm import get_destination
 
 
-async def get_file_category(
-    attachments: list[discord.Attachment], categories: Iterable[MessageCategory]
-) -> MessageCategory | None:
-    """Gets the category for a given list of attachments."""
+async def get_file_destination(
+    attachments: list[discord.Attachment], destinations: Iterable[Destination]
+) -> Destination | None:
+    """Gets the destination for a given list of attachments."""
     filenames = "\n".join(f"- {a.filename.split('.')[-1].lower()}" for a in attachments)
-    return await get_category(filenames, categories)
+    return await get_destination(filenames, destinations)

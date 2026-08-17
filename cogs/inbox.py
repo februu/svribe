@@ -2,21 +2,21 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from models.message_category import MessageCategory
-from services.files import get_file_category
-from services.links import get_link_category, has_link
-from services.notes import get_note_category
+from models.destination import Destination
+from services.files import get_file_destination
+from services.links import get_link_destination, has_link
+from services.notes import get_note_destination
 
 
-async def get_message_categories_from_category_channel(
+async def get_destinations_from_category(
     guild: discord.Guild, category_name: str
-) -> list[MessageCategory]:
-    """Returns a list of MessageCategory objects for the given discord category."""
+) -> list[Destination]:
+    """Returns a list of Destination objects for the given Discord category."""
     discord_category = discord.utils.get(guild.categories, name=category_name)
     if discord_category is None:
         return []
     return [
-        MessageCategory(
+        Destination(
             name=channel.name.lower(),
             description=channel.topic or "",
             channel=channel,
@@ -38,32 +38,32 @@ async def handle_incoming_message(message: discord.Message):
         return
 
     if message.attachments:
-        available_categories = await get_message_categories_from_category_channel(
+        available_destinations = await get_destinations_from_category(
             message.guild, "files"
         )
-        message_category = await get_file_category(
-            message.attachments, available_categories
+        destination = await get_file_destination(
+            message.attachments, available_destinations
         )
     elif has_link(message.content):
-        available_categories = await get_message_categories_from_category_channel(
+        available_destinations = await get_destinations_from_category(
             message.guild, "links"
         )
-        message_category = await get_link_category(
-            message.content, available_categories
+        destination = await get_link_destination(
+            message.content, available_destinations
         )
     else:
-        available_categories = await get_message_categories_from_category_channel(
+        available_destinations = await get_destinations_from_category(
             message.guild, "notes"
         )
-        message_category = await get_note_category(
-            message.content, available_categories
+        destination = await get_note_destination(
+            message.content, available_destinations
         )
 
-    if not message_category:
-        await message.channel.send("Cannot determine category for the message.")
+    if not destination:
+        await message.channel.send("Cannot determine a destination for the message.")
         return
 
-    await message_category.channel.send(
+    await destination.channel.send(
         message.content,
         files=[await attachment.to_file() for attachment in message.attachments],
     )
