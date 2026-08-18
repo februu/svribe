@@ -6,14 +6,22 @@ from models.destination import Destination
 from services.files import get_file_destination
 from services.links import get_link_destination, has_link
 from services.notes import get_note_destination
+from services.settings import (
+    get_files_category_id,
+    get_inbox_channel_id,
+    get_links_category_id,
+    get_notes_category_id,
+)
 
 
 async def get_destinations_from_category(
-    guild: discord.Guild, category_name: str
+    guild: discord.Guild, category_id: int | None
 ) -> list[Destination]:
     """Returns a list of Destination objects for the given Discord category."""
-    discord_category = discord.utils.get(guild.categories, name=category_name)
-    if discord_category is None:
+    if category_id is None:
+        return []
+    discord_category = guild.get_channel(category_id)
+    if not isinstance(discord_category, discord.CategoryChannel):
         return []
     return [
         Destination(
@@ -34,26 +42,30 @@ async def handle_incoming_message(message: discord.Message):
     if not isinstance(message.channel, discord.TextChannel):
         return
 
-    if message.channel.name != "inbox":
+    inbox_channel_id = await get_inbox_channel_id(message.guild.id)
+    if message.channel.id != inbox_channel_id:
         return
 
     if message.attachments:
+        files_category_id = await get_files_category_id(message.guild.id)
         available_destinations = await get_destinations_from_category(
-            message.guild, "files"
+            message.guild, files_category_id
         )
         destination = await get_file_destination(
             message.attachments, available_destinations
         )
     elif has_link(message.content):
+        links_category_id = await get_links_category_id(message.guild.id)
         available_destinations = await get_destinations_from_category(
-            message.guild, "links"
+            message.guild, links_category_id
         )
         destination = await get_link_destination(
             message.content, available_destinations
         )
     else:
+        notes_category_id = await get_notes_category_id(message.guild.id)
         available_destinations = await get_destinations_from_category(
-            message.guild, "notes"
+            message.guild, notes_category_id
         )
         destination = await get_note_destination(
             message.content, available_destinations
