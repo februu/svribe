@@ -84,15 +84,19 @@ class Setup(commands.Cog):
         for category in guild.categories:
             await category.delete()
 
-        await guild.create_text_channel("inbox")
+        inbox_channel = await guild.create_text_channel("inbox")
+        await set_inbox_channel_id(guild.id, inbox_channel.id)
 
         notes_category = await guild.create_category("notes")
+        await set_notes_category_id(guild.id, notes_category.id)
         await guild.create_text_channel("uncategorized", category=notes_category)
 
         links_category = await guild.create_category("links")
+        await set_links_category_id(guild.id, links_category.id)
         await guild.create_text_channel("uncategorized", category=links_category)
 
         files_category = await guild.create_category("files")
+        await set_files_category_id(guild.id, files_category.id)
         await guild.create_text_channel("images", category=files_category)
         await guild.create_text_channel("audio", category=files_category)
         await guild.create_text_channel("video", category=files_category)
