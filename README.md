@@ -20,6 +20,7 @@ _Svribe is your personal Discord Assistant that will transform a server into you
 - Reminders and events with reminder support
 - Google Calendar integration
 - More LLM provider interfaces
+- Spending and budget tracker
 
 > Suggestions are welcome!
 
